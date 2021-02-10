@@ -571,6 +571,10 @@ export class Client {
     this.makeRequest({method, bucketName, headers}, payload, 200, region, false, cb)
   }
 
+  listBuckets(cb) {
+    return this.listBuckets2({}, cb)
+  }
+
   // List of buckets created.
   //
   // __Arguments__
@@ -579,12 +583,16 @@ export class Client {
   // `buckets` array element:
   // * `bucket.name` _string_ : bucket name
   // * `bucket.creationDate` _Date_: date when bucket was created
-  listBuckets(cb) {
+  listBuckets2(options, cb) {
+    if (!isObject(options)) {
+      throw new TypeError('options should be of type "object"')
+    }
     if (!isFunction(cb)) {
       throw new TypeError('callback should be of type "function"')
     }
     var method = 'GET'
-    this.makeRequest({method}, '', 200, 'us-east-1', true, (e, response) => {
+    var query = options ? options.query : undefined
+    this.makeRequest({method, query}, '', 200, 'us-east-1', true, (e, response) => {
       if (e) return cb(e)
       var transformer = transformers.getListBucketTransformer()
       var buckets
@@ -2212,6 +2220,7 @@ export class Client {
 // Promisify various public-facing APIs on the Client module.
 Client.prototype.makeBucket = promisify(Client.prototype.makeBucket)
 Client.prototype.listBuckets = promisify(Client.prototype.listBuckets)
+Client.prototype.listBuckets2 = promisify(Client.prototype.listBuckets2)
 Client.prototype.bucketExists = promisify(Client.prototype.bucketExists)
 Client.prototype.removeBucket = promisify(Client.prototype.removeBucket)
 

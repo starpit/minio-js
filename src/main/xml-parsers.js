@@ -132,7 +132,8 @@ export function parseListBucket(xml) {
       toArray(xmlobj.Buckets.Bucket).forEach(bucket => {
         var name = bucket.Name
         var creationDate = new Date(bucket.CreationDate)
-        result.push({name, creationDate})
+        var locationConstraint = bucket.LocationConstraint
+        result.push({name, creationDate, locationConstraint})
       })
     }
   }
@@ -398,4 +399,4 @@ export function parseListObjectsV2WithMetadata(xml) {
 export function parseBucketVersioningConfig(xml){
   var xmlObj = parseXml(xml)
   return xmlObj.VersioningConfiguration
-}
+} 
